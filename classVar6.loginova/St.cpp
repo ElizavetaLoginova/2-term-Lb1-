@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "Train.h"
 
 using namespace std;
@@ -6,29 +6,19 @@ using namespace std;
 Train InitTrain();
 Train* InitArray(int);
 void DisplayArray(Train*, int);
-void EnterArray(int*, int);
-void DisplayChoise(Train*, int, char*);
+void DisplayChoise(Train*, int, char*, int);
 int Menu();
 
 
 int main()
 {
-	enum { Init = 1, Create, Display, Add, Change, Remove, Sort, Exit };
+
 	while (true)
 	{
-		int Key = Menu();
-		if (Key == Exit)
-			return 0;
+	
 		system("cls");
-		switch (Key)
-		{
-		case Init:
-			InitTrain;
-			break;
-		default:
-			cout << "\nIncorrect input! Try again!";
-		}
-
+		InitTrain;
+		
 		int n;
 		cout << "\n Enter the number of Trains:";
 		cin >> n;
@@ -42,16 +32,25 @@ int main()
 		}
 		cout << "\nThe list of Trains:\n";
 		DisplayArray(Trains, n);
-		char departureTimeTag[N];
-		cout << "\nEnter the departure time:";
-		cin >> departureTimeTag;
+		int y=1;
+		while (y)
+		{
+			int k = Menu();
+		if (k == 4) return 0;
+		if (k != 0)
+		{
+			char departureTag[N];
+			cout << "\nEnter the tag:";
+			cin >> departureTag;
 
-
-
-		DisplayChoise(Trains, n, departureTimeTag);
-		cout << "\n\nThe sorting list of Trains: \n";
-
+			DisplayChoise(Trains, n, departureTag, k);
+			system("pause");
+			cout << "If you  want exit press 0 " << endl;
+			cin >> y;
+		}
+		}
 		delete[] Trains;
+	
 	}
 	system("pause");
 	return 0;
@@ -60,6 +59,7 @@ int main()
 Train InitTrain()
 {
 	char carDestination[N] = "not", TrainNumber[N] = "not", departureTime[N] = "not";
+	char numCommon[N] = "not", numCompartment[N] = "not", secondClass[N] = "not";
 	cout << "\nEnter Destination of the train:";
 	cin.ignore();
 	cin.get(carDestination, N, '\n');
@@ -70,9 +70,19 @@ Train InitTrain()
 	cin.ignore();
 	cin.get(departureTime, N, '\n');
 
+	cout << "Enter the number of common seats: ";
+	cin.ignore();
+	cin.get(numCommon, N, '\n');
+	cout << "Enter the number of compartment seats: ";
+	cin.ignore();
+	cin.get(numCompartment, N, '\n');
+	cout << "Enter the number of second-class seats: ";
+	cin.ignore();
+	cin.get(secondClass, N, '\n');
+
 
 	Train trip;
-	trip.SetTrain(carDestination, TrainNumber, departureTime);
+	trip.SetTrain(carDestination, TrainNumber, departureTime, numCommon, numCompartment, secondClass);
 	return trip;
 }
 
@@ -89,16 +99,6 @@ Train* InitArray(int n)
 	return array;
 }
 
-void EnterArray(int* array, int n)
-{
-	for (int i = 0; i < M; i++)
-	{
-		cout << "enter A[" << (i + 1) << "] = ";
-		cin >> array[i];
-	}
-}
-
-
 void DisplayArray(Train* array, int n)
 {
 	for (int i = 0; i < n; i++)
@@ -106,24 +106,35 @@ void DisplayArray(Train* array, int n)
 	cout << endl;
 }
 
-void DisplayChoise(Train* array, int dimension, char* departureTimeTag)
-{
+void DisplayChoise(Train* array, int dimension, char* departureTag, int key)
+{ 
+	
 	for (int i = 0; i < dimension; i++)
-	if (!strcmp(array[i].GetdepartureTime(), departureTimeTag)) 
-		array[i].DisplayTrain();
+	{
+
+		if (!strcmp(array[i].GetcarDestination(), departureTag) && key == 1)
+			array[i].DisplayTrain();
+		if (!strcmp(array[i].GetdepartureTime(), departureTag) && key == 2)
+			array[i].DisplayTrain();
+		if (!strcmp(array[i].GetNumberOfCommonPlaces(), departureTag) && key == 3)
+			array[i].DisplayTrain();
+	}
 }
+
 int Menu()
 {
 	int k;
-	cout << "\n Enter the number - the mode of operations:"
-		"\n 1 - Init the list of trains"
-		"\n 2 - List of trains coming to the specified destination : "
-		"\n 3 - VIEWING OF CONTENTS OF THE FILE"
-		"\n 4 - ADD AN ELEMENT TO AND"
-		"\n 5 - CHANGE THE ELEMENT"
-		"\n 6 - REMOVE THE ELEMENT"
-		"\n 7 - SORTING THE ELEMENT"
-		"\n 8 - EXIT\n";
+	cout << "Enter your choise: " << endl;
+	cout << " 1. By the destination: ";
+	cout << " 2. By the time: ";
+	cout << " 3. By the common seats: ";
+	cout << " 4. Exit ";
+
 	cin >> k;
+	if (k > 4)
+	{
+		cout << "Invalid data! Try again.";
+		return 0;
+	}
 	return k;
 }
